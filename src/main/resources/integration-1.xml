@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/integration
+    http://www.springframework.org/schema/integration/spring-integration.xsd
+
+     http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <!-- START: CHANNELS -->
+    <int:channel
+            id="incoming-channel"
+            datatype="com.chriniko.springbootintegrationsample.dto.Name"/>
+
+    <int:channel
+            id="tracking-channel"
+            datatype="java.lang.String">
+        <int:queue capacity="100"/>
+    </int:channel>
+
+    <int:channel id="outgoing-channel"
+                 datatype="java.lang.String"/>
+
+    <int:channel id="network-channel" datatype="java.lang.String"/>
+    <!-- END: CHANNELS -->
+
+
+    <!-- START: GATEWAY-FLOW -->
+    <int:channel-interceptor pattern="incoming-*" ref="incomingChannelInterceptor"/>
+
+    <int:gateway default-request-channel="incoming-channel"
+                 default-reply-channel="outgoing-channel"
+                 error-channel="errorChannel"
+                 service-interface="com.chriniko.springbootintegrationsample.gateway.HelloGateway"/>
+
+    <int:chain input-channel="incoming-channel" output-channel="network-channel">
+
+        <int:delayer id="delayer" default-delay="300"/>
+
+        <int:header-enricher>
+            <int:header name="SHOULD_UPPERCASE" ref="uppercaser" method="shouldUppercase"/>
+        </int:header-enricher>
+
+        <int:transformer ref="helloWorld" method="process"/>
+
+    </int:chain>
+
+    <int:recipient-list-router input-channel="network-channel">
+        <int:recipient channel="outgoing-channel"/>
+        <int:recipient channel="tracking-channel"/>
+    </int:recipient-list-router>
+
+
+    <int:service-activator input-channel="tracking-channel"
+                           ref="tracker"
+                           method="perform">
+        <int:poller fixed-delay="3"
+                    time-unit="SECONDS"
+                    max-messages-per-poll="1"
+                    task-executor="trackingExecutor">
+        </int:poller>
+    </int:service-activator>
+    <!-- END: GATEWAY-FLOW -->
+
+
+    <!-- START: BEANS -->
+    <bean id="helloWorld" class="com.chriniko.springbootintegrationsample.transformer.HelloWorld"/>
+
+    <bean id="tracker" class="com.chriniko.springbootintegrationsample.service.Tracker" init-method="init"/>
+
+    <bean id="incomingChannelInterceptor"
+          class="com.chriniko.springbootintegrationsample.interceptor.IncomingChannelInterceptor"/>
+
+    <bean id="uppercaser" class="com.chriniko.springbootintegrationsample.service.Uppercaser"/>
+
+    <task:executor id="trackingExecutor" queue-capacity="20" pool-size="2-20" keep-alive="4"
+                   rejection-policy="DISCARD_OLDEST"/>
+    <!-- END: BEANS -->
+</beans>

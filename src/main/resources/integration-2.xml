@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+
+    <!-- START: CHANNELS -->
+    <int:channel id="inputChannel" datatype="com.chriniko.springbootintegrationsample.dto.Input"/>
+
+    <!-- TODO enrich it-->
+    <int:publish-subscribe-channel id="timeForWorkChannel"
+                                   datatype="com.chriniko.springbootintegrationsample.dto.Input"
+                                   ignore-failures="true"
+                                   max-subscribers="5"
+                                   min-subscribers="5"
+    />
+
+    <int:channel id="timeToCollectChannel" fixed-subscriber="true"/>
+
+    <int:channel id="outputChannel" datatype="com.chriniko.springbootintegrationsample.dto.Output"/>
+    <!-- END: CHANNELS -->
+
+
+    <!-- START: GATEWAY-FLOW -->
+    <int:gateway service-interface="com.chriniko.springbootintegrationsample.gateway.SampleGateway"
+                 default-request-channel="inputChannel"
+                 default-reply-channel="outputChannel"
+                 error-channel="errorChannel"/>
+
+    <int:splitter input-channel="inputChannel"
+                  output-channel="timeForWorkChannel"
+                  ref="inputSplitter"
+                  method="process"/>
+
+    <int:object-to-string-transformer input-channel="timeForWorkChannel" output-channel="timeToCollectChannel"/>
+
+    <int:object-to-map-transformer input-channel="timeForWorkChannel" output-channel="timeToCollectChannel"/>
+
+    <int:object-to-json-transformer input-channel="timeForWorkChannel" output-channel="timeToCollectChannel"/>
+
+    <int:payload-serializing-transformer input-channel="timeForWorkChannel" output-channel="timeToCollectChannel"/>
+
+    <int-xml:marshalling-transformer input-channel="timeForWorkChannel" output-channel="timeToCollectChannel"
+                                     marshaller="marshaller" result-type="DOMResult"/>
+
+    <int:aggregator input-channel="timeToCollectChannel"
+                    output-channel="outputChannel"
+
+                    correlation-strategy="inputCorrelationStrategy"
+                    release-strategy="inputReleaseStrategy"
+
+                    ref="toOutput"
+                    method="process"
+
+    />
+
+    <!-- END: GATEWAY-FLOW -->
+
+    <!-- START: BEANS -->
+    <bean id="toOutput" class="com.chriniko.springbootintegrationsample.service.ToOutput">
+        <constructor-arg index="0" ref="jacksonObjectMapper"/>
+    </bean>
+
+    <bean id="inputSplitter" class="com.chriniko.springbootintegrationsample.service.InputSplitter"/>
+
+    <bean id="inputCorrelationStrategy"
+          class="com.chriniko.springbootintegrationsample.correlation.InputCorrelationStrategy"/>
+
+    <bean id="inputReleaseStrategy" class="com.chriniko.springbootintegrationsample.release.InputReleaseStrategy"/>
+    <!-- END: BEANS -->
+
+
+</beans>
