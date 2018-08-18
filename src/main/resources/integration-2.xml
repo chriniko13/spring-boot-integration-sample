@@ -3,20 +3,23 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+        http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
 
     <!-- START: CHANNELS -->
     <int:channel id="inputChannel" datatype="com.chriniko.springbootintegrationsample.dto.Input"/>
 
-    <!-- TODO enrich it-->
     <int:publish-subscribe-channel id="timeForWorkChannel"
                                    datatype="com.chriniko.springbootintegrationsample.dto.Input"
                                    ignore-failures="true"
                                    max-subscribers="5"
                                    min-subscribers="5"
+                                   task-executor="workerExecutor"
+                                   error-handler="pubSubErrorHandler"
     />
 
     <int:channel id="timeToCollectChannel" fixed-subscriber="true"/>
@@ -49,16 +52,14 @@
 
     <int:aggregator input-channel="timeToCollectChannel"
                     output-channel="outputChannel"
-
                     correlation-strategy="inputCorrelationStrategy"
                     release-strategy="inputReleaseStrategy"
-
                     ref="toOutput"
                     method="process"
-
     />
 
     <!-- END: GATEWAY-FLOW -->
+
 
     <!-- START: BEANS -->
     <bean id="toOutput" class="com.chriniko.springbootintegrationsample.service.ToOutput">
@@ -71,6 +72,12 @@
           class="com.chriniko.springbootintegrationsample.correlation.InputCorrelationStrategy"/>
 
     <bean id="inputReleaseStrategy" class="com.chriniko.springbootintegrationsample.release.InputReleaseStrategy"/>
+
+    <bean id="pubSubErrorHandler" class="com.chriniko.springbootintegrationsample.handler.PubSubChannelErrorHandler"/>
+
+    <task:executor id="workerExecutor" queue-capacity="20" pool-size="5" keep-alive="4"
+                   rejection-policy="CALLER_RUNS"/>
+
     <!-- END: BEANS -->
 
 
