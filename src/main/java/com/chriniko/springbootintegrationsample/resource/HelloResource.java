@@ -27,7 +27,8 @@ public class HelloResource {
     @RequestMapping(
             value = "/hello",
             method = RequestMethod.POST,
-            produces = MediaType.TEXT_PLAIN_VALUE
+            produces = MediaType.TEXT_PLAIN_VALUE,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
     public @ResponseBody
     HttpEntity<String> sayHello(@RequestBody Name name) {
@@ -39,7 +40,8 @@ public class HelloResource {
     @RequestMapping(
             value = "/sample",
             method = RequestMethod.POST,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
     public @ResponseBody
     HttpEntity<Output> sayHello(@RequestBody Input input) {
