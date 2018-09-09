@@ -30,6 +30,8 @@ public class SwissLotto extends Ticket {
                 "boardOneNumbers=" + boardOneNumbers +
                 ", boardTwoNumbers=" + boardTwoNumbers +
                 ", id='" + id + '\'' +
+                ", drawNumber=" + drawNumber +
+                ", outcome='" + outcome + '\'' +
                 '}';
     }
 }

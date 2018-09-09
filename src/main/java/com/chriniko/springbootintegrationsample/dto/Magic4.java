@@ -19,6 +19,8 @@ public class Magic4 extends Ticket {
         return "Magic4{" +
                 "numbers=" + numbers +
                 ", id='" + id + '\'' +
+                ", drawNumber=" + drawNumber +
+                ", outcome='" + outcome + '\'' +
                 '}';
     }
 }

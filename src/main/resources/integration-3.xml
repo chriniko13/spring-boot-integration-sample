@@ -2,11 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
+
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
 
@@ -37,15 +36,17 @@
 
     <!-- create some tickets-messages -->
     <int:splitter input-channel="start-action-dbg-draw-channel"
-                     output-channel="random-tickets-created-channel"
-                     ref="randomTicketCreator"
-                     method="process"/>
+                  output-channel="random-tickets-created-channel"
+                  ref="randomTicketCreator"
+                  method="process"/>
 
     <!-- route tickets to correct channels based on their types -->
     <int:payload-type-router input-channel="random-tickets-created-channel">
-        <int:mapping type="com.chriniko.springbootintegrationsample.dto.Euromillions" channel="euromillions-tickets-channel"/>
+        <int:mapping type="com.chriniko.springbootintegrationsample.dto.Euromillions"
+                     channel="euromillions-tickets-channel"/>
         <int:mapping type="com.chriniko.springbootintegrationsample.dto.Magic4" channel="magic4-tickets-channel"/>
-        <int:mapping type="com.chriniko.springbootintegrationsample.dto.SwissLotto" channel="swisslotto-tickets-channel"/>
+        <int:mapping type="com.chriniko.springbootintegrationsample.dto.SwissLotto"
+                     channel="swisslotto-tickets-channel"/>
         <int:mapping type="com.chriniko.springbootintegrationsample.dto.TrioMagic" channel="triomagic-tickets-channel"/>
     </int:payload-type-router>
 
@@ -74,25 +75,22 @@
                     release-strategy="ticketsCollectorReleaseStrategy">
     </int:aggregator>
 
-    <!-- TODO do routing based on header value (WIN or LOSE) -->
-
-    <!-- TODO response to caller with the winning tickets only -->
-
     <int:service-activator input-channel="tickets-collected-channel"
                            output-channel="end-action-dbg-draw-channel"
                            ref="dbgResultProducer"
                            method="produce">
     </int:service-activator>
-
-    <int:service-activator input-channel="errorChannel"
-                           ref="errorChannelHandler"
-                           method="handle"/>
-
     <!-- END: GATEWAY-FLOW -->
 
 
-    <!-- START: BEANS -->
+    <!-- START: ERROR HANDLING -->
+    <int:service-activator input-channel="errorChannel"
+                           ref="errorChannelHandler"
+                           method="handle"/>
+    <!-- END: ERROR HANDLING -->
 
+
+    <!-- START: BEANS -->
     <task:executor id="dbgWorkerExecutor" queue-capacity="20" pool-size="5" keep-alive="4"
                    rejection-policy="CALLER_RUNS"/>
 
@@ -104,22 +102,27 @@
 
     <bean id="winningRandomSelection" class="com.chriniko.springbootintegrationsample.service.WinningRandomSelection"/>
 
-    <bean id="euromillionsTicketProcessor" class="com.chriniko.springbootintegrationsample.service.processor.EuromillionsTicketProcessor"/>
+    <bean id="euromillionsTicketProcessor"
+          class="com.chriniko.springbootintegrationsample.service.processor.EuromillionsTicketProcessor"/>
 
-    <bean id="magic4TicketProcessor" class="com.chriniko.springbootintegrationsample.service.processor.Magic4TicketProcessor"/>
+    <bean id="magic4TicketProcessor"
+          class="com.chriniko.springbootintegrationsample.service.processor.Magic4TicketProcessor"/>
 
-    <bean id="swisslottoTicketProcessor" class="com.chriniko.springbootintegrationsample.service.processor.SwissLottoTicketProcessor"/>
+    <bean id="swisslottoTicketProcessor"
+          class="com.chriniko.springbootintegrationsample.service.processor.SwissLottoTicketProcessor"/>
 
-    <bean id="triomagicTicketProcessor" class="com.chriniko.springbootintegrationsample.service.processor.TrioMagicTicketProcessor"/>
+    <bean id="triomagicTicketProcessor"
+          class="com.chriniko.springbootintegrationsample.service.processor.TrioMagicTicketProcessor"/>
 
-    <bean id="ticketsCollectorReleaseStrategy" class="com.chriniko.springbootintegrationsample.release.TicketsCollectorReleaseStrategy"/>
+    <bean id="ticketsCollectorReleaseStrategy"
+          class="com.chriniko.springbootintegrationsample.release.TicketsCollectorReleaseStrategy"/>
 
-    <bean id="ticketsCollectorCorrelationStrategy" class="com.chriniko.springbootintegrationsample.correlation.TicketsCollectorCorrelationStrategy"/>
+    <bean id="ticketsCollectorCorrelationStrategy"
+          class="com.chriniko.springbootintegrationsample.correlation.TicketsCollectorCorrelationStrategy"/>
 
     <bean id="ticketsCollector" class="com.chriniko.springbootintegrationsample.service.TicketsCollector">
         <constructor-arg index="0" ref="winningRandomSelection"/>
     </bean>
-
     <!-- END: BEANS -->
 
 

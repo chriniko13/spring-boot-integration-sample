@@ -19,6 +19,8 @@ public class TrioMagic extends Ticket {
         return "TrioMagic{" +
                 "numbers=" + numbers +
                 ", id='" + id + '\'' +
+                ", drawNumber=" + drawNumber +
+                ", outcome='" + outcome + '\'' +
                 '}';
     }
 }

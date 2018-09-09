@@ -30,6 +30,8 @@ public class Euromillions extends Ticket {
                 "numbers=" + numbers +
                 ", raffle='" + raffle + '\'' +
                 ", id='" + id + '\'' +
+                ", drawNumber=" + drawNumber +
+                ", outcome='" + outcome + '\'' +
                 '}';
     }
 }

@@ -11,4 +11,11 @@ public class DrawInfo {
     public void setDrawNumber(int drawNumber) {
         this.drawNumber = drawNumber;
     }
+
+    @Override
+    public String toString() {
+        return "DrawInfo{" +
+                "drawNumber=" + drawNumber +
+                '}';
+    }
 }

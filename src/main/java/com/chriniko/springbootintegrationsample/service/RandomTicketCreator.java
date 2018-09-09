@@ -84,20 +84,18 @@ public class RandomTicketCreator {
                 })
                 .collect(Collectors.toList());
 
-
-        return createdTickets.stream()
-                .map(createdTicket -> {
-                    return MessageBuilder
-                            .withPayload(createdTicket)
-                            .copyHeadersIfAbsent(drawInfoMessage.getHeaders())
-                            .setHeader(DRAW_INFO, drawInfoMessage.getPayload())
-                            .build();
-                })
+        return createdTickets
+                .stream()
+                .map(createdTicket -> MessageBuilder
+                        .withPayload(createdTicket)
+                        .copyHeadersIfAbsent(drawInfoMessage.getHeaders())
+                        .setHeader(DRAW_INFO, drawInfoMessage.getPayload())
+                        .build()
+                )
                 .collect(Collectors.toList());
     }
 
     private List<String> getRandomNumbers(int howMany, int boundInclusive) {
-
         return IntStream.rangeClosed(1, howMany)
                 .boxed()
                 .map(idx -> getRandomNum(boundInclusive))

@@ -9,7 +9,7 @@ public class PubSubChannelErrorHandler implements ErrorHandler {
 
     // Note: in a real system, a subscriber will consume errors from this
     //       queue and based on the criteria it has, it will replay it, or
-    //       discard it, or escalate it to support engineers.
+    //       discard it, or escalate it to support engineers for further investigation.
     public Queue<Throwable> errorsOccurred = new LinkedBlockingQueue<>();
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DbgResultProducer {
 
@@ -21,6 +22,11 @@ public class DbgResultProducer {
         DbgResult dbgResult = new DbgResult();
         dbgResult.setDrawInfo(drawInfo);
         dbgResult.setWinTickets(payload);
+        dbgResult.setGroupingByOutcome(
+                payload
+                        .stream()
+                        .collect(Collectors.groupingBy(Ticket::getOutcome))
+        );
 
         return MessageBuilder
                 .withPayload(dbgResult)
