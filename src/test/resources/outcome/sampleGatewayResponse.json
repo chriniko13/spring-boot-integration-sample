@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "type": "DOMResult",
+      "value": "{\"node\":\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-16\\\"?>\\n<input><someString>foo</someString><someBoolean>true</someBoolean><someDouble>1.2</someDouble></input>\",\"nextSibling\":null,\"systemId\":null}"
+    },
+    {
+      "type": "HashMap",
+      "value": "{\"someBoolean\":true,\"someString\":\"foo\",\"someDouble\":1.2}"
+    },
+    {
+      "type": "String",
+      "value": "\"Input{someString='foo', someBoolean=true, someDouble=1.2}\""
+    },
+    {
+      "type": "String",
+      "value": "\"{\\\"someString\\\":\\\"foo\\\",\\\"someBoolean\\\":true,\\\"someDouble\\\":1.2}\""
+    },
+    {
+      "type": "byte[]",
+      "value": "\"rO0ABXNyADJjb20uY2hyaW5pa28uc3ByaW5nYm9vdGludGVncmF0aW9uc2FtcGxlLmR0by5JbnB1dO92XOrPOJf6AgADTAALc29tZUJvb2xlYW50ABNMamF2YS9sYW5nL0Jvb2xlYW47TAAKc29tZURvdWJsZXQAEkxqYXZhL2xhbmcvRG91YmxlO0wACnNvbWVTdHJpbmd0ABJMamF2YS9sYW5nL1N0cmluZzt4cHNyABFqYXZhLmxhbmcuQm9vbGVhbs0gcoDVnPruAgABWgAFdmFsdWV4cAFzcgAQamF2YS5sYW5nLkRvdWJsZYCzwkopa/sEAgABRAAFdmFsdWV4cgAQamF2YS5sYW5nLk51bWJlcoaslR0LlOCLAgAAeHA/8zMzMzMzM3QAA2Zvbw==\""
+    }
+  ]
+}

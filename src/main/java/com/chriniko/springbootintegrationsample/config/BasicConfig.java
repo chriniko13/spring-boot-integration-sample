@@ -4,6 +4,7 @@ import com.chriniko.springbootintegrationsample.dto.Input;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 
@@ -25,6 +26,11 @@ public class BasicConfig {
 
         return marshaller;
 
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 }

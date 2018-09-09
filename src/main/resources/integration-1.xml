@@ -59,7 +59,7 @@
                            method="perform">
         <int:poller fixed-delay="3"
                     time-unit="SECONDS"
-                    max-messages-per-poll="1"
+                    max-messages-per-poll="10"
                     task-executor="trackingExecutor">
         </int:poller>
     </int:service-activator>

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.messaging.Message;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,9 @@ public class ToOutput {
 
         Output output = new Output();
         output.setResults(payloads);
+
+        output.getResults().sort(Comparator.comparing(Output.Pair::getType));
+
         return output;
     }
 }
