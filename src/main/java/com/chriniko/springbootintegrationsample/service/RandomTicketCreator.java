@@ -39,7 +39,7 @@ public class RandomTicketCreator {
 
                     Class<? extends Ticket> ticketType = ticketTypes.get(ticketTypeToCreate);
 
-                    Ticket createdTicket = null;
+                    Ticket createdTicket;
 
                     if (ticketType.equals(Euromillions.class)) {
 
