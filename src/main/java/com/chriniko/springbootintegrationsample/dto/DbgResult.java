@@ -10,7 +10,7 @@ public class DbgResult {
 
     private DrawInfo drawInfo;
 
-    private List<Ticket> winTickets;
+    private List<Ticket> tickets;
 
     private Map<String, List<Ticket>> groupingByOutcome;
 
@@ -22,12 +22,12 @@ public class DbgResult {
         this.drawInfo = drawInfo;
     }
 
-    public List<Ticket> getWinTickets() {
-        return winTickets;
+    public List<Ticket> getTickets() {
+        return tickets;
     }
 
-    public void setWinTickets(List<Ticket> winTickets) {
-        this.winTickets = winTickets;
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
     }
 
     public Map<String, List<Ticket>> getGroupingByOutcome() {

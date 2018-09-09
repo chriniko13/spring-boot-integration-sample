@@ -21,7 +21,7 @@ public class DbgResultProducer {
 
         DbgResult dbgResult = new DbgResult();
         dbgResult.setDrawInfo(drawInfo);
-        dbgResult.setWinTickets(payload);
+        dbgResult.setTickets(payload);
         dbgResult.setGroupingByOutcome(
                 payload
                         .stream()
