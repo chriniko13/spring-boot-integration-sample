@@ -10,7 +10,8 @@ import org.springframework.context.annotation.ImportResource;
         {
                 "classpath:integration-1.xml",
                 "classpath:integration-2.xml",
-                "classpath:integration-3.xml"
+                "classpath:integration-3.xml",
+                "classpath:integration-4.xml"
         }
 )
 public class SpringBootIntegrationSampleApplication {

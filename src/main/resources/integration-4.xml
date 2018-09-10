@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- START: CHANNELS -->
+    <int:channel id="beginChannel"/>
+    <int:channel id="resultChannel"/>
+
+    <int:channel id="processed-request-channel"/>
+
+    <int:channel id="superbikes-channel"/>
+    <int:channel id="hypernaked-bikes-channel"/>
+    <!-- END: CHANNELS -->
+
+    <!-- START: FLOW -->
+    <int:gateway service-interface="com.chriniko.springbootintegrationsample.gateway.BikeChoiceGateway"
+                 default-request-channel="beginChannel"
+                 default-reply-channel="resultChannel"/>
+
+    <int:header-enricher input-channel="beginChannel"
+                         output-channel="processed-request-channel">
+        <int:header name="TYPE" expression="payload.isYouCrazy() ? 'SUPERBIKE' : 'HYPERNAKED'"/>
+    </int:header-enricher>
+
+    <int:header-value-router input-channel="processed-request-channel"
+                             default-output-channel="nullChannel"
+                             resolution-required="true"
+                             ignore-send-failures="false"
+                             header-name="TYPE">
+        <int:mapping value="SUPERBIKE" channel="superbikes-channel"/>
+        <int:mapping value="HYPERNAKED" channel="hypernaked-bikes-channel"/>
+    </int:header-value-router>
+
+
+    <int:transformer input-channel="superbikes-channel"
+                     output-channel="resultChannel"
+                     ref="superbikesTransformer"
+                     method="process"/>
+
+    <int:transformer input-channel="hypernaked-bikes-channel"
+                     output-channel="resultChannel"
+                     ref="hypernakedBikesTransformer"
+                     method="process"/>
+    <!-- END: FLOW-->
+
+    <!-- START: BEANS -->
+    <bean id="superbikesTransformer"
+          class="com.chriniko.springbootintegrationsample.transformer.SuperbikesTransformer"/>
+
+    <bean id="hypernakedBikesTransformer"
+          class="com.chriniko.springbootintegrationsample.transformer.HypernakedBikesTransformer"/>
+    <!-- END: BEANS -->
+
+</beans>
